@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASUTION STORE - Order Apk Bug via web</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Bangers (Comic Action Display), Outfit (Modern Display), Plus Jakarta Sans (Body) -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Outfit"', 'sans-serif'],
+                        comic: ['"Bangers"', 'cursive', 'sans-serif'],
+                    },
+                    colors: {
+                        comic: {
+                            gold: '#ffd700',
+                            yellow: '#facc15',
+                            purple: '#8b5cf6',
+                            pink: '#ec4899',
+                            cyan: '#06b6d4',
+                            dark: '#080a12',
+                            card: '#0f1424',
+                            border: '#222d4a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #070913;
+            /* Halftone Comic Dot Pattern Overlay */
+            background-image: 
+                radial-gradient(rgba(139, 92, 246, 0.12) 1.5px, transparent 1.5px),
+                radial-gradient(rgba(245, 158, 11, 0.08) 1.5px, #070913 1.5px);
+            background-size: 24px 24px;
+            background-position: 0 0, 12px 12px;
+            color: #f8fafc;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Comic Action Speedlines Effect for Banner */
+        .speedlines-bg {
+            background: 
+                radial-gradient(ellipse at center, rgba(30, 27, 75, 0.8) 0%, rgba(7, 9, 19, 0.95) 100%),
+                repeating-conic-gradient(from 0deg, rgba(99, 102, 241, 0.08) 0deg 10deg, transparent 10deg 20deg);
+        }
+
+        /* Luxury Comic Glassmorphism Card */
+        .comic-glass {
+            background: rgba(15, 20, 36, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid #222d4a;
+            box-shadow: 5px 5px 0px #03050a, 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Interactive Comic Card Hover Effects */
+        .comic-card-interactive {
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .comic-card-interactive:hover {
+            transform: translateY(-4px) scale(1.01) rotate(-0.5deg);
+            border-color: #f59e0b;
+            box-shadow: 7px 7px 0px #4f46e5, 0 0 25px rgba(245, 158, 11, 0.3);
+        }
+
+        .comic-card-interactive:active {
+            transform: translateY(1px) scale(0.99);
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        /* Item Selection State */
+        .item-selected {
+            border-color: #f59e0b !important;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(99, 102, 241, 0.15) 100%) !important;
+            box-shadow: 6px 6px 0px #6366f1, 0 0 20px rgba(245, 158, 11, 0.4) !important;
+            transform: scale(1.02);
+        }
+
+        /* Skewed Comic Badges */
+        .comic-badge-skew {
+            transform: rotate(-2deg);
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        /* Text Gradients */
+        .text-gradient-comic {
+            background: linear-gradient(135deg, #ffffff 0%, #fef08a 40%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-gradient-purple {
+            background: linear-gradient(135deg, #a7f3d0 0%, #38bdf8 50%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Glowing Comic Buttons */
+        .btn-comic {
+            position: relative;
+            box-shadow: 4px 4px 0px #000;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-comic:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #000, 0 0 20px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-comic:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px #000;
+        }
+
+        /* SEAMLESS INFINITE MARQUEE */
+        @keyframes marqueeSeamless {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .animate-marquee-seamless {
+            display: flex;
+            width: max-content;
+            animation: marqueeSeamless 20s linear infinite;
+        }
+
+        .marquee-wrapper:hover .animate-marquee-seamless {
+            animation-play-state: paused;
+        }
+
+        /* View Transitions */
+        .view-section {
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .view-hidden {
+            display: none !important;
+            opacity: 0;
+            transform: translateY(12px) scale(0.98);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 7px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #070913;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3730a3;
+            border-radius: 999px;
+            border: 2px solid #070913;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f59e0b;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between relative selection:bg-amber-400 selection:text-black">
+
+    <!-- STICKY NAVBAR & STICKY RUNNING TEXT CONTAINER -->
+    <header class="sticky top-0 z-40 bg-comic-dark/95 backdrop-blur-2xl border-b-2 border-indigo-900/80 shadow-2xl">
+        <div class="max-w-xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer group" onclick="showView('view-catalog')">
+                <div class="relative flex items-center justify-center">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 via-violet-600 to-indigo-600 border-2 border-black flex items-center justify-center text-white font-comic text-2xl shadow-[3px_3px_0px_#000] group-hover:rotate-6 transition transform">
+                        N
+                    </div>
+                    <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-black"></span>
+                    </span>
+                </div>
+                <div>
+                    <h1 class="font-display font-black text-base tracking-wider text-white flex items-center gap-1.5 uppercase">
+                        NASUTION STORE <span class="text-sm">🇪🇦</span>
+                    </h1>
+                    <div class="flex items-center gap-1.5 text-[10px] font-extrabold text-amber-400">
+                        <i class="fa-solid fa-bolt text-amber-400 animate-pulse"></i> DIGITAL COMIC HUB 24/7
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="showView('view-catalog')" class="btn-comic text-xs font-black text-white bg-indigo-600 hover:bg-indigo-500 px-3.5 py-2 rounded-xl border-2 border-black flex items-center gap-1.5">
+                <i class="fa-solid fa-house"></i> BERANDA
+            </button>
+        </div>
+
+        <!-- SEAMLESS STICKY RUNNING TEXT TICKER (COMIC BANNER) -->
+        <div class="bg-gradient-to-r from-amber-500 via-indigo-600 to-amber-500 text-black border-t-2 border-black overflow-hidden py-1.5 font-bold marquee-wrapper relative z-20 shadow-md">
+            <div class="animate-marquee-seamless flex whitespace-nowrap text-xs font-black uppercase tracking-wider text-white">
+                <!-- Track 1 -->
+                <div class="flex items-center gap-8 shrink-0 pr-8">
+                    <span class="flex items-center gap-2 bg-black/30 px-2 py-0.5 rounded text-amber-300"><i class="fa-solid fa-bullhorn text-yellow-300 animate-bounce"></i> SELAMAT DATANG DI NASUTION STORE</span>
+                    <span class="text-amber-300">★</span>
+                    <span>Penyedia Role Aplikasi & Followers WhatsApp Tercepat, Aman & Terpercaya!</span>
+                    <span class="text-amber-300">★</span>
+                    <span class="text-emerald-300"><i class="fa-solid fa-qrcode mr-1"></i> METODE PEMBAYARAN QRIS OTOMATIS INSTANT</span>
+                    <span class="text-amber-300">★</span>
+                </div>
+                <!-- Track 2 (Duplicate for Seamless Loop) -->
+                <div class="flex items-center gap-8 shrink-0 pr-8">
+                    <span class="flex items-center gap-2 bg-black/30 px-2 py-0.5 rounded text-amber-300"><i class="fa-solid fa-bullhorn text-yellow-300 animate-bounce"></i> SELAMAT DATANG DI NASUTION STORE</span>
+                    <span class="text-amber-300">★</span>
+                    <span>Penyedia Role Aplikasi & Followers WhatsApp Tercepat, Aman & Terpercaya!</span>
+                    <span class="text-amber-300">★</span>
+                    <span class="text-emerald-300"><i class="fa-solid fa-qrcode mr-1"></i> METODE PEMBAYARAN QRIS OTOMATIS INSTANT</span>
+                    <span class="text-amber-300">★</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- COMIC CHAPTER PROGRESS TRACKER -->
+    <div class="max-w-xl mx-auto w-full px-4 pt-5 relative z-10">
+        <div class="comic-glass rounded-2xl p-3 flex items-center justify-between text-xs shadow-xl">
+            <div id="step-indicator-1" class="flex items-center gap-2 text-amber-400 font-extrabold transition-all">
+                <span class="w-6 h-6 rounded-lg bg-amber-500 text-black border border-black flex items-center justify-center font-comic text-sm shadow-[2px_2px_0px_#000]">1</span>
+                <span>PILIH LAYANAN</span>
+            </div>
+            <i class="fa-solid fa-angles-right text-[10px] text-gray-600"></i>
+            <div id="step-indicator-2" class="flex items-center gap-2 text-gray-500 font-bold transition-all">
+                <span id="step-badge-2" class="w-6 h-6 rounded-lg bg-gray-800 text-gray-400 border border-gray-700 flex items-center justify-center font-comic text-sm">2</span>
+                <span id="step-text-2">PILIH PAKET</span>
+            </div>
+            <i class="fa-solid fa-angles-right text-[10px] text-gray-600"></i>
+            <div id="step-indicator-3" class="flex items-center gap-2 text-gray-500 font-bold transition-all">
+                <span id="step-badge-3" class="w-6 h-6 rounded-lg bg-gray-800 text-gray-400 border border-gray-700 flex items-center justify-center font-comic text-sm">3</span>
+                <span id="step-text-3">ISI DATA & QRIS</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-xl mx-auto px-4 py-6 flex-grow w-full relative z-10">
+
+        <!-- =====================================================================
+             VIEW 1: KATALOG APLIKASI UTAMA (COMIC HERO & CARDS)
+        ====================================================================== -->
+        <section id="view-catalog" class="view-section space-y-6">
+            
+            <!-- Comic Hero Speedlines Banner -->
+            <div class="relative rounded-3xl p-6 comic-glass speedlines-bg border-2 border-indigo-500/50 shadow-2xl overflow-hidden">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="comic-badge-skew bg-gradient-to-r from-amber-400 to-amber-500 text-black border-2 border-black font-black text-[10px] px-3 py-1 rounded-md uppercase tracking-wider">
+                        <i class="fa-solid fa-fire text-black mr-1"></i> SPECIAL STORE HUB
+                    </span>
+                    <span class="text-[10px] text-emerald-400 font-extrabold bg-emerald-500/15 border border-emerald-500/40 px-2.5 py-0.5 rounded-md">
+                        <i class="fa-solid fa-shield-halved text-xs mr-1"></i> OFFICIAL 100%
+                    </span>
+                </div>
+
+                <h2 class="font-comic text-3xl font-normal text-white tracking-wide mb-1 leading-tight drop-shadow-[2px_2px_0px_#000]">
+                    WELCOME TO <span class="text-gradient-comic">NASUTION STORE!</span>
+                </h2>
+                <p class="text-xs text-gray-300 leading-relaxed font-medium">
+                    Silahkan pilih aplikasi atau layanan digital di bawah ini untuk melihat pilihan role, paket & list harga resmi.
+                </p>
+
+                <!-- Store Features Badges -->
+                <div class="grid grid-cols-3 gap-2 pt-4 mt-4 border-t-2 border-indigo-900/60 text-[11px]">
+                    <div class="flex items-center gap-1.5 text-emerald-400 font-extrabold">
+                        <i class="fa-solid fa-circle-check text-amber-400"></i> 100% Aman
+                    </div>
+                    <div class="flex items-center gap-1.5 text-cyan-400 font-extrabold">
+                        <i class="fa-solid fa-qrcode text-amber-400"></i> QRIS Ready
+                    </div>
+                    <div class="flex items-center gap-1.5 text-amber-400 font-extrabold">
+                        <i class="fa-solid fa-headset text-amber-400"></i> Fast Support
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Title -->
+            <div class="flex items-center justify-between">
+                <h3 class="font-comic text-lg tracking-wider text-amber-400 flex items-center gap-2">
+                    <i class="fa-solid fa-gamepad text-indigo-400"></i> PILIH APLIKASI ATAU LAYANAN
+                </h3>
+            </div>
+
+            <!-- Catalog Cards Grid -->
+            <div class="space-y-4">
+                
+                <!-- FBZZ PROJECT CARD -->
+                <div onclick="openProduct('fbzz')" class="comic-glass comic-card-interactive rounded-2xl p-4 cursor-pointer flex items-center justify-between group">
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <img id="logo-fbzz-catalog" src="" alt="FBZZ" onerror="this.onerror=null; this.src='https://placehold.co/180x180/4f46e5/ffffff?text=FBZZ';" class="w-14 h-14 rounded-2xl object-cover bg-gray-900 border-2 border-indigo-500 shadow-[3px_3px_0px_#000]">
+                            <span class="absolute -bottom-1 -right-1 bg-indigo-600 text-white text-[9px] font-comic px-1.5 py-0.5 rounded border border-black shadow">ROLE</span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-1.5">
+                                <h4 class="font-display font-black text-base text-white group-hover:text-amber-300 transition">FBZZ PROJECT</h4>
+                                <i class="fa-solid fa-circle-check text-sky-400 text-xs" title="Official Verified"></i>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-0.5">Role Member, VIP, Reseller, Admin, Partner & Owner</p>
+                            <span class="inline-block mt-2 text-[10px] font-black text-amber-300 bg-amber-500/10 px-2.5 py-0.5 rounded border border-amber-500/30">
+                                Mulai Rp5.000
+                            </span>
+                        </div>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-indigo-600/30 group-hover:bg-amber-500 text-amber-400 group-hover:text-black border-2 border-indigo-500 group-hover:border-black flex items-center justify-center transition shadow-[2px_2px_0px_#000]">
+                        <i class="fa-solid fa-arrow-right text-sm"></i>
+                    </div>
+                </div>
+
+                <!-- SUNTIK FOLLOWERS WA CARD -->
+                <div onclick="openProduct('wa')" class="comic-glass comic-card-interactive rounded-2xl p-4 cursor-pointer flex items-center justify-between group">
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <img id="logo-wa-catalog" src="" alt="WA" onerror="this.onerror=null; this.src='https://placehold.co/180x180/059669/ffffff?text=WA';" class="w-14 h-14 rounded-2xl object-cover bg-gray-900 border-2 border-emerald-500 shadow-[3px_3px_0px_#000]">
+                            <span class="absolute -bottom-1 -right-1 bg-emerald-600 text-white text-[9px] font-comic px-1.5 py-0.5 rounded border border-black shadow">WA</span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-1.5">
+                                <h4 class="font-display font-black text-base text-white group-hover:text-emerald-300 transition">SUNTIK FOLLOWERS WA</h4>
+                                <i class="fa-solid fa-circle-check text-sky-400 text-xs" title="Official Verified"></i>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-0.5">Suntik Followers Channel WhatsApp Real & Instant</p>
+                            <span class="inline-block mt-2 text-[10px] font-black text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded border border-emerald-500/30">
+                                1.000 s/d 10.000 Followers
+                            </span>
+                        </div>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-600/30 group-hover:bg-emerald-500 text-emerald-400 group-hover:text-black border-2 border-emerald-500 group-hover:border-black flex items-center justify-center transition shadow-[2px_2px_0px_#000]">
+                        <i class="fa-solid fa-arrow-right text-sm"></i>
+                    </div>
+                </div>
+
+                <!-- APRICOT PROJECT CARD -->
+                <div onclick="openProduct('apricot')" class="comic-glass comic-card-interactive rounded-2xl p-4 cursor-pointer flex items-center justify-between group">
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <img id="logo-apricot-catalog" src="" alt="APRICOT" onerror="this.onerror=null; this.src='https://placehold.co/180x180/d97706/ffffff?text=APRICOT';" class="w-14 h-14 rounded-2xl object-cover bg-gray-900 border-2 border-amber-500 shadow-[3px_3px_0px_#000]">
+                            <span class="absolute -bottom-1 -right-1 bg-amber-600 text-white text-[9px] font-comic px-1.5 py-0.5 rounded border border-black shadow">APK</span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-1.5">
+                                <h4 class="font-display font-black text-base text-white group-hover:text-amber-300 transition">APRICOT PROJECT</h4>
+                                <i class="fa-solid fa-circle-check text-sky-400 text-xs" title="Official Verified"></i>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-0.5">Aplikasi Bug Gacor, Tools & Game, WA Auto C1</p>
+                            <span class="inline-block mt-2 text-[10px] font-black text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded border border-amber-500/30">
+                                Mulai Rp2.000 (Trial & Permanen)
+                            </span>
+                        </div>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-amber-600/30 group-hover:bg-amber-500 text-amber-400 group-hover:text-black border-2 border-amber-500 group-hover:border-black flex items-center justify-center transition shadow-[2px_2px_0px_#000]">
+                        <i class="fa-solid fa-arrow-right text-sm"></i>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- =====================================================================
+             VIEW 2: HALAMAN LIST HARGA & PILIH ROLE / PAKET
+        ====================================================================== -->
+        <section id="view-product" class="view-section view-hidden space-y-5">
+            
+            <button onclick="showView('view-catalog')" class="btn-comic text-xs font-bold text-gray-200 bg-gray-800/90 hover:bg-indigo-600 px-3.5 py-2 rounded-xl border-2 border-black flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Kembali ke Pilih Layanan
+            </button>
+
+            <!-- Product Selected Header Card -->
+            <div class="comic-glass rounded-2xl p-4 flex items-center gap-4 shadow-xl">
+                <img id="detail-product-img" src="" alt="App" onerror="this.onerror=null; this.src='https://placehold.co/180x180/334155/ffffff?text=APP';" class="w-14 h-14 rounded-2xl object-cover bg-gray-900 border-2 border-amber-400 shadow-[3px_3px_0px_#000]">
+                <div>
+                    <span id="detail-product-tag" class="text-[9px] font-comic uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 tracking-wider">
+                        PRODUCT
+                    </span>
+                    <h3 id="detail-product-title" class="font-display font-black text-lg text-white mt-1 leading-none">-</h3>
+                    <p id="detail-product-desc" class="text-xs text-gray-300 mt-1 leading-relaxed">-</p>
+                </div>
+            </div>
+
+            <!-- List Options Section Title -->
+            <div class="flex items-center justify-between pt-2">
+                <h3 class="font-comic text-lg tracking-wider text-amber-400 flex items-center gap-2">
+                    <i class="fa-solid fa-tags"></i> PILIH ROLE / PAKET HARGA
+                </h3>
+                <span class="text-[10px] text-amber-300 font-extrabold bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/30">Pilih Salah Satu</span>
+            </div>
+
+            <!-- Options Grid Container -->
+            <div id="options-container" class="space-y-4">
+                <!-- Injected via JS -->
+            </div>
+
+            <!-- Continue Button -->
+            <button id="btn-to-checkout" onclick="goToCheckout()" class="btn-comic w-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-black font-black py-3.5 rounded-xl border-2 border-black text-sm uppercase tracking-wide flex items-center justify-center gap-2 hidden">
+                Lanjut ke Formulir Pemesanan <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </section>
+
+
+        <!-- =====================================================================
+             VIEW 3: HALAMAN FORMULIR PEMESANAN (EXACT MATCH USER REQUIREMENT)
+        ====================================================================== -->
+        <section id="view-checkout" class="view-section view-hidden space-y-5">
+            
+            <button onclick="showView('view-product')" class="btn-comic text-xs font-bold text-gray-200 bg-gray-800/90 hover:bg-indigo-600 px-3.5 py-2 rounded-xl border-2 border-black flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Ubah Pilihan Paket
+            </button>
+
+            <!-- FORM CARD (MATCHING USER'S SCREENSHOT DESIGN) -->
+            <div class="comic-glass rounded-2xl p-5 space-y-4 border-2 border-indigo-500/40">
+                
+                <!-- Card Header -->
+                <div class="border-b-2 border-gray-800 pb-3">
+                    <div class="flex items-center gap-2 text-indigo-300 font-bold text-xs uppercase tracking-wider mb-1">
+                        <i class="fa-regular fa-pen-to-square text-amber-400 text-sm"></i>
+                        <span id="form-header-title">USERNAME / ID ACCOUNT / PASSWORD ANDA</span>
+                    </div>
+                    <p id="form-header-subtitle" class="text-xs text-gray-400 leading-relaxed">
+                        Masukkan username / id account / password anda untuk memproses pesanan.
+                    </p>
+                </div>
+
+                <!-- Input Fields Container -->
+                <div id="form-fields-container" class="space-y-3.5 pt-1">
+                    <!-- Fields injected dynamically -->
+                </div>
+            </div>
+
+            <!-- Summary Order Card -->
+            <div class="comic-glass rounded-2xl p-4 border-2 border-amber-500/40 space-y-2 text-xs">
+                <div class="flex justify-between text-gray-400">
+                    <span>Produk Terpilih:</span>
+                    <span id="summary-product-name" class="font-bold text-white"></span>
+                </div>
+                <div class="flex justify-between text-gray-400">
+                    <span>Paket / Role:</span>
+                    <span id="summary-package-name" class="font-black text-amber-300"></span>
+                </div>
+                <div class="flex justify-between border-t border-gray-800 pt-2 text-sm">
+                    <span class="font-bold text-gray-200">Total Nominal:</span>
+                    <span id="summary-total-price" class="font-black text-emerald-400 text-base"></span>
+                </div>
+            </div>
+
+            <!-- Pay Button -->
+            <button onclick="openPaymentModal()" class="btn-comic w-full bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-600 text-white font-black py-4 rounded-xl border-2 border-black text-base flex items-center justify-center gap-2">
+                <i class="fa-solid fa-qrcode text-lg text-amber-400"></i> Bayar via QRIS Now
+            </button>
+        </section>
+
+    </main>
+
+    <!-- =====================================================================
+         MODAL POPUP QRIS PAYMENT
+    ====================================================================== -->
+    <div id="modal-qris" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="comic-glass max-w-sm w-full rounded-3xl p-5 border-2 border-amber-400 shadow-2xl transform scale-95 transition-transform duration-300 relative text-center" id="modal-content">
+            
+            <button onclick="closePaymentModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-gray-800 w-8 h-8 rounded-full border border-black flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <span class="inline-block bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-bold px-3 py-1 rounded-full uppercase mb-2">
+                <i class="fa-solid fa-shield-halved mr-1"></i> QRIS Pembayaran Resmi
+            </span>
+            <h3 class="font-comic text-2xl text-white tracking-wide">SCAN & BAYAR SEKARANG</h3>
+            <p class="text-[11px] text-gray-300 mt-0.5">BCA, Mandiri, BRI, Dana, GoPay, OVO, ShopeePay & Semua Bank</p>
+
+            <!-- QR Code Display Box -->
+            <div class="bg-white p-3.5 rounded-2xl my-4 inline-block border-2 border-black shadow-[4px_4px_0px_#000]">
+                <img id="qris-img-display" src="" alt="QRIS NASUTION STORE" onerror="this.onerror=null; this.src='https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=NASUTION_STORE_OFFICIAL_QRIS_PAYMENT';" class="w-56 h-56 object-contain rounded-lg">
+                <div class="mt-2 text-black font-black text-[11px] tracking-wider uppercase flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-qrcode"></i> NASUTION STORE
+                </div>
+            </div>
+
+            <div class="bg-gray-900 rounded-xl p-3 border border-gray-800 mb-4 text-xs flex justify-between items-center">
+                <span class="text-gray-400 font-medium">Total Tagihan:</span>
+                <span id="modal-total-display" class="font-black text-emerald-400 text-base"></span>
+            </div>
+
+            <button onclick="confirmToWhatsApp()" class="btn-comic w-full bg-emerald-500 text-black font-extrabold py-3.5 rounded-xl border-2 border-black flex items-center justify-center gap-2 text-sm">
+                <i class="fa-brands fa-whatsapp text-lg"></i> Konfirmasi Transfer ke WA Admin
+            </button>
+            <p class="text-[10px] text-gray-400 mt-2">
+                *Screenshot QRIS di atas, bayar, lalu klik tombol untuk konfirmasi ke WA Admin.
+            </p>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto text-center text-xs text-gray-500 py-6 border-t-2 border-gray-900 bg-comic-dark relative z-10">
+        <p>&copy; 2026 <strong class="text-amber-400">NASUTION STORE</strong>. All Rights Reserved.</p>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC (ALL PRODUCTS & FEATURES INTACT 100%) -->
+    <script>
+        const STORE_CONFIG = {
+            storeName: "NASUTION STORE",
+            adminWhatsApp: "6285789797426", // Nomor WA Admin
+            qrisUrl: "https://cdn.phototourl.com/member/2026-10-28-a8630b5f-de96-4dcf-a6c5-01b9ce0c2426.jpg",
+            logoFbzz: "https://c.termai.cc/i150/PZOA.jpg",
+            logoWaFollowers: "https://placehold.co/180x180/059669/ffffff?text=WA+FOLL",
+            logoApricot: "https://placehold.co/180x180/d97706/ffffff?text=APRICOT"
+        };
+
+        const PRODUCTS_DATA = {
+            fbzz: {
+                id: 'fbzz',
+                title: 'FBZZ PROJECT',
+                tag: 'Aplikasi Role Access',
+                desc: 'Aplikasi Premium dengan berbagai tingkatan Role Akses.',
+                logo: STORE_CONFIG.logoFbzz,
+                categories: [
+                    {
+                        role: '1. ROLE MEMBER',
+                        items: [
+                            { name: 'Member 5 Hari', price: 7000 },
+                            { name: 'Member 7 Hari', price: 12000 },
+                            { name: 'Member 30 Hari / Month', price: 14000 },
+                            { name: 'Member Permanen', price: 22000 }
+                        ]
+                    },
+                    {
+                        role: '2. ROLE VIP',
+                        items: [
+                            { name: 'VIP 2 Hari', price: 5000 },
+                            { name: 'VIP 4 Hari', price: 7000 },
+                            { name: 'VIP 7 Hari', price: 12000 },
+                            { name: 'VIP 30 Hari / Sebulan', price: 18000 },
+                            { name: 'VIP Permanen', price: 22000 }
+                        ]
+                    },
+                    {
+                        role: '3. ROLE RESELLER',
+                        items: [{ name: 'Reseller Permanen', price: 33000 }]
+                    },
+                    {
+                        role: '4. ROLE ADMIN',
+                        items: [{ name: 'Admin Permanen', price: 43000 }]
+                    },
+                    {
+                        role: '5. ROLE PARTNER',
+                        items: [{ name: 'Partner Permanen', price: 53000 }]
+                    },
+                    {
+                        role: '6. ROLE OWNER',
+                        items: [{ name: 'Owner Permanen', price: 75000 }]
+                    }
+                ]
+            },
+            wa: {
+                id: 'wa',
+                title: 'SUNTIK FOLLOWERS WHATSAPP',
+                tag: 'Suntik Channel WA',
+                desc: 'Layanan penambah followers Channel WA Real & Permanen.',
+                logo: STORE_CONFIG.logoWaFollowers,
+                categories: [
+                    {
+                        role: 'PAKET FOLLOWERS CHANNEL WA',
+                        items: [
+                            { name: '👤 100 Followers', price: 600 },
+                            { name: '👤 200 Followers', price: 1000 },
+                            { name: '👤 300 Followers', price: 1500 },
+                            { name: '👤 400 Followers', price: 1800 },
+                            { name: '👤 500 Followers', price: 2500 },
+                            { name: '👤 600 Followers', price: 2800 },
+                            { name: '👤 700 Followers', price: 3000 },
+                            { name: '👤 800 Followers', price: 3500 },
+                            { name: '👤 900 Followers', price: 4000 },
+                            { name: '👤 1.000 Followers', price: 8370 },
+                            { name: '👤 2.000 Followers', price: 16740 },
+                            { name: '👤 3.000 Followers', price: 25110 },
+                            { name: '👤 4.000 Followers', price: 35480 },
+                            { name: '👤 5.000 Followers', price: 41850 },
+                            { name: '👤 6.000 Followers', price: 50220 },
+                            { name: '👤 7.000 Followers', price: 58590 },
+                            { name: '👤 8.000 Followers', price: 66960 },
+                            { name: '👤 9.000 Followers', price: 75330 },
+                            { name: '👤 10.000 Followers', price: 83700 }
+                        ]
+                    }
+                ]
+            },
+            apricot: {
+                id: 'apricot',
+                title: 'APRICOT PROJECT',
+                tag: 'Bug Gacor & Tools WA',
+                desc: 'APLIKASI BUG GACOR, TOOLS & GAME ADA BANYAK, WA AUTO C1',
+                logo: STORE_CONFIG.logoApricot,
+                categories: [
+                    {
+                        role: '1. ROLE MEMBER',
+                        items: [
+                            { name: 'Member 1 Hari', price: 2000 },
+                            { name: 'Member 3 Hari', price: 4000 },
+                            { name: 'Member 5 Hari', price: 5000 },
+                            { name: 'Member 7 hari', price: 7000 },
+                            { name: 'Member 30 Hari', price: 10000 },
+                            { name: 'Member Permanen', price: 12000 }
+                        ]
+                    },
+                    {
+                        role: '2. ROLE VIP (PERMANEN)',
+                        items: [{ name: 'VIP Permanen', price: 16000 }]
+                    },
+                    {
+                        role: '3. ROLE RESELLER (PERMANEN)',
+                        items: [{ name: 'Reseller Permanen', price: 22000 }]
+                    },
+                    {
+                        role: '4. ROLE PARTNER (PERMANEN)',
+                        items: [{ name: 'Partner Permanen', price: 26000 }]
+                    },
+                    {
+                        role: '5. ROLE MODERATOR / ADMIN (PERMANEN)',
+                        items: [{ name: 'Moderator / Admin Permanen', price: 35000 }]
+                    },
+                    {
+                        role: '6. ROLE TK / TANGAN KANAN (PERMANEN)',
+                        items: [{ name: 'TK / Tangan Kanan Permanen', price: 33000 }]
+                    },
+                    {
+                        role: '7. ROLE OWNER (PERMANEN)',
+                        items: [{ name: 'Owner Permanen', price: 43000 }]
+                    }
+                ]
+            }
+        };
+
+        let currentProduct = null;
+        let selectedItem = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('logo-fbzz-catalog').src = STORE_CONFIG.logoFbzz;
+            document.getElementById('logo-wa-catalog').src = STORE_CONFIG.logoWaFollowers;
+            document.getElementById('logo-apricot-catalog').src = STORE_CONFIG.logoApricot;
+            document.getElementById('qris-img-display').src = STORE_CONFIG.qrisUrl;
+        });
+
+        // Dynamic Page View Switcher
+        function showView(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('view-hidden'));
+            const targetView = document.getElementById(viewId);
+            if (targetView) targetView.classList.remove('view-hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Update Step Indicators
+            const step1 = document.getElementById('step-indicator-1');
+            const step2Badge = document.getElementById('step-badge-2');
+            const step2Text = document.getElementById('step-text-2');
+            const step3Badge = document.getElementById('step-badge-3');
+            const step3Text = document.getElementById('step-text-3');
+
+            if (viewId === 'view-catalog') {
+                step1.className = 'flex items-center gap-2 text-amber-400 font-extrabold';
+                step2Badge.className = 'w-6 h-6 rounded-lg bg-gray-800 text-gray-400 border border-gray-700 flex items-center justify-center font-comic text-sm';
+                step2Text.className = 'text-gray-500 font-bold';
+                step3Badge.className = 'w-6 h-6 rounded-lg bg-gray-800 text-gray-400 border border-gray-700 flex items-center justify-center font-comic text-sm';
+                step3Text.className = 'text-gray-500 font-bold';
+            } else if (viewId === 'view-product') {
+                step1.className = 'flex items-center gap-2 text-gray-400 font-bold';
+                step2Badge.className = 'w-6 h-6 rounded-lg bg-amber-500 text-black border border-black flex items-center justify-center font-comic text-sm shadow-[2px_2px_0px_#000]';
+                step2Text.className = 'text-amber-400 font-extrabold';
+                step3Badge.className = 'w-6 h-6 rounded-lg bg-gray-800 text-gray-400 border border-gray-700 flex items-center justify-center font-comic text-sm';
+                step3Text.className = 'text-gray-500 font-bold';
+            } else if (viewId === 'view-checkout') {
+                step1.className = 'flex items-center gap-2 text-gray-400 font-bold';
+                step2Badge.className = 'w-6 h-6 rounded-lg bg-gray-800 text-gray-400 border border-gray-700 flex items-center justify-center font-comic text-sm';
+                step2Text.className = 'text-gray-500 font-bold';
+                step3Badge.className = 'w-6 h-6 rounded-lg bg-emerald-500 text-black border border-black flex items-center justify-center font-comic text-sm shadow-[2px_2px_0px_#000]';
+                step3Text.className = 'text-emerald-400 font-extrabold';
+            }
+        }
+
+        // Open Product Details
+        function openProduct(productId) {
+            currentProduct = PRODUCTS_DATA[productId];
+            selectedItem = null;
+
+            if (!currentProduct) return;
+
+            document.getElementById('detail-product-img').src = currentProduct.logo;
+            document.getElementById('detail-product-title').innerText = currentProduct.title;
+            document.getElementById('detail-product-tag').innerText = currentProduct.tag || 'PRODUCT';
+            document.getElementById('detail-product-desc').innerText = currentProduct.desc;
+            document.getElementById('btn-to-checkout').classList.add('hidden');
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            currentProduct.categories.forEach(cat => {
+                const groupTitle = document.createElement('div');
+                groupTitle.className = 'font-comic text-sm uppercase text-amber-300 mt-4 mb-2 flex items-center gap-2 tracking-wide';
+                groupTitle.innerHTML = `<i class="fa-solid fa-shield-halved text-amber-400"></i> ${cat.role}`;
+                container.appendChild(groupTitle);
+
+                const grid = document.createElement('div');
+                grid.className = 'grid grid-cols-2 gap-2.5';
+
+                cat.items.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'option-card comic-glass rounded-xl p-3 cursor-pointer border-2 border-gray-800 hover:border-amber-400/80 transition flex flex-col justify-between shadow-md';
+                    card.onclick = () => selectOption(card, item);
+
+                    card.innerHTML = `
+                        <span class="text-xs font-bold text-gray-200">${item.name}</span>
+                        <span class="text-xs font-black text-emerald-400 mt-2 block">Rp${item.price.toLocaleString('id-ID')}</span>
+                    `;
+                    grid.appendChild(card);
+                });
+
+                container.appendChild(grid);
+            });
+
+            showView('view-product');
+        }
+
+        // Handle Option Select
+        function selectOption(element, item) {
+            document.querySelectorAll('.option-card').forEach(el => el.classList.remove('item-selected'));
+            element.classList.add('item-selected');
+            selectedItem = item;
+
+            document.getElementById('btn-to-checkout').classList.remove('hidden');
+        }
+
+        // Go to Checkout View
+        function goToCheckout() {
+            if (!selectedItem) return;
+
+            const fieldsContainer = document.getElementById('form-fields-container');
+            fieldsContainer.innerHTML = '';
+
+            if (currentProduct.id === 'wa') {
+                document.getElementById('form-header-title').innerText = 'LINK CHANNEL WHATSAPP TARGET';
+                document.getElementById('form-header-subtitle').innerText = 'Masukkan link channel WhatsApp target untuk pengiriman suntik followers.';
+
+                fieldsContainer.innerHTML = `
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-extrabold uppercase text-gray-400">Link Channel WhatsApp Target</label>
+                        <input type="text" id="input-user" class="w-full bg-black/60 border-2 border-gray-800 focus:border-amber-400 rounded-xl px-3.5 py-3 text-xs text-white outline-none transition" placeholder="https://whatsapp.com/channel/..." required>
+                    </div>
+                `;
+            } else {
+                document.getElementById('form-header-title').innerText = 'USERNAME / ID ACCOUNT / PASSWORD ANDA';
+                document.getElementById('form-header-subtitle').innerText = 'Masukkan username dan password anda untuk memproses aktivasi role pesanan.';
+
+                fieldsContainer.innerHTML = `
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-extrabold uppercase text-gray-400">Username / ID Account</label>
+                        <input type="text" id="input-user" class="w-full bg-black/60 border-2 border-gray-800 focus:border-amber-400 rounded-xl px-3.5 py-3 text-xs text-white outline-none transition" placeholder="Contoh: user_123" required>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-extrabold uppercase text-gray-400">Password Akun</label>
+                        <input type="password" id="input-pass" class="w-full bg-black/60 border-2 border-gray-800 focus:border-amber-400 rounded-xl px-3.5 py-3 text-xs text-white outline-none transition" placeholder="Masukkan password akun" required>
+                    </div>
+                `;
+            }
+
+            document.getElementById('summary-product-name').innerText = currentProduct.title;
+            document.getElementById('summary-package-name').innerText = selectedItem.name;
+            document.getElementById('summary-total-price').innerText = 'Rp' + selectedItem.price.toLocaleString('id-ID');
+
+            showView('view-checkout');
+        }
+
+        // Open Payment QRIS Modal
+        function openPaymentModal() {
+            const userInput = document.getElementById('input-user').value.trim();
+            const passInput = document.getElementById('input-pass') ? document.getElementById('input-pass').value.trim() : null;
+
+            if (!userInput || (passInput !== null && !passInput)) {
+                alert('Mohon isi semua formulir data pesanan Anda!');
+                return;
+            }
+
+            document.getElementById('modal-total-display').innerText = 'Rp' + selectedItem.price.toLocaleString('id-ID');
+            const modal = document.getElementById('modal-qris');
+            const content = document.getElementById('modal-content');
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closePaymentModal() {
+            const modal = document.getElementById('modal-qris');
+            const content = document.getElementById('modal-content');
+
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // WhatsApp Direct Deep-Link Confirmation
+        function confirmToWhatsApp() {
+            const userInput = document.getElementById('input-user').value.trim();
+            const passInput = document.getElementById('input-pass') ? document.getElementById('input-pass').value.trim() : '-';
+
+            let message = `*HALO ADMIN ${STORE_CONFIG.storeName}*\n`;
+            message += `Saya mau konfirmasi order via QRIS:\n\n`;
+            message += `📌 *Produk:* ${currentProduct.title}\n`;
+            message += `🏷️ *Paket/Role:* ${selectedItem.name}\n`;
+            message += `💰 *Total Bayar:* Rp${selectedItem.price.toLocaleString('id-ID')}\n\n`;
+            message += `📝 *DATA PEMESAN:*\n`;
+            message += `• *Username/Target:* ${userInput}\n`;
+            if (currentProduct.id !== 'wa') {
+                message += `• *Password:* ${passInput}\n`;
+            }
+            message += `\n CEPAT DI PROSES MIN, PENGEN BUG ORANG NIIHH WKWKWKW`;
+
+            const encodedMsg = encodeURIComponent(message);
+            const waNumber = STORE_CONFIG.adminWhatsApp;
+            
+            // App Deep Link with Web Fallback
+            const appUrl = `whatsapp://send?phone=${waNumber}&text=${encodedMsg}`;
+            const webUrl = `https://wa.me/${waNumber}?text=${encodedMsg}`;
+
+            window.location.href = appUrl;
+            setTimeout(() => {
+                window.open(webUrl, '_blank');
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
