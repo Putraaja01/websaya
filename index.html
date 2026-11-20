@@ -512,6 +512,36 @@
             box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.18);
         }
 
+        .voucher-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-apply-voucher {
+            background: linear-gradient(135deg, #fbbf24, #d97706);
+            color: #050811;
+            border: none;
+            border-radius: 13px;
+            padding: 0 18px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .btn-apply-voucher:hover {
+            transform: translateY(-1px);
+            opacity: 0.95;
+        }
+
+        .voucher-status {
+            font-size: 0.78rem;
+            margin-top: 6px;
+            font-weight: 600;
+            display: none;
+        }
+
         .order-summary-box {
             background: rgba(10, 15, 29, 0.88);
             border: 1px dashed rgba(251, 191, 36, 0.45);
@@ -660,19 +690,6 @@
             gap: 10px;
         }
 
-        .spinner {
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-top-color: #fbbf24;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
         .btn-wa {
             background: linear-gradient(135deg, #25d366, #16a34a);
             color: #042210;
@@ -737,8 +754,8 @@
 
         <div class="ticker-wrap">
             <div class="ticker-track">
-                <span class="ticker-item">⚡ SELAMAT DATANG DI NASUTION STORE 🇪🇦 — X-MIYAXI EXECUTION, SUNTIK FOLLOWERS WHATSAPP, TELEGRAM & TIKTOK • PEMBAYARAN OTOMATIS VIA QRIS API 24/7 ⚡</span>
-                <span class="ticker-item">⚡ SELAMAT DATANG DI NASUTION STORE 🇪🇦 — X-MIYAXI EXECUTION, SUNTIK FOLLOWERS WHATSAPP, TELEGRAM & TIKTOK • PEMBAYARAN OTOMATIS VIA QRIS API 24/7 ⚡</span>
+                <span class="ticker-item">⚡ SELAMAT DATANG DI NASUTION STORE 🇪🇦 — X-MIYAXI EXECUTION, SUNTIK FOLLOWERS WHATSAPP, TELEGRAM & TIKTOK • PEMBAYARAN CEPAT VIA QRIS 24/7 ⚡</span>
+                <span class="ticker-item">⚡ SELAMAT DATANG DI NASUTION STORE 🇪🇦 — X-MIYAXI EXECUTION, SUNTIK FOLLOWERS WHATSAPP, TELEGRAM & TIKTOK • PEMBAYARAN CEPAT VIA QRIS 24/7 ⚡</span>
             </div>
         </div>
     </header>
@@ -756,7 +773,7 @@
         <div id="view-1" class="view-section active">
             <div class="hero">
                 <h1>X-MIYAXI EXECUTION & Suntik Followers</h1>
-                <p>Pilih layanan atau produk di bawah ini untuk melihat daftar harga, penjelasan role, serta melakukan pembayaran otomatis melalui <strong>QRIS Dinamis</strong>.</p>
+                <p>Pilih layanan atau produk di bawah ini untuk melihat daftar harga, penjelasan role, serta melakukan pembayaran melalui <strong>QRIS</strong>.</p>
             </div>
 
             <div class="product-grid" id="catalog-grid"></div>
@@ -796,6 +813,16 @@
 
                 <div id="dynamic-form-fields"></div>
 
+                <!-- VOUCHER KHUSUS X-MIYAXI EXECUTION -->
+                <div id="miyaxi-voucher-box" class="form-group" style="display: none;">
+                    <label class="form-label"><i class="fa-solid fa-ticket" style="color: #fbbf24;"></i> Kode Voucher Diskon 50% (Khusus X-MIYAXI)</label>
+                    <div class="voucher-row">
+                        <input type="text" id="input-voucher-code" class="form-input" placeholder="Masukkan kode voucher (cth: MIYAXI50)" style="text-transform: uppercase;">
+                        <button type="button" class="btn-apply-voucher" onclick="applyMiyaxiVoucher()">Gunakan</button>
+                    </div>
+                    <div id="voucher-status-msg" class="voucher-status"></div>
+                </div>
+
                 <div class="order-summary-box">
                     <div class="summary-row">
                         <span>Produk</span>
@@ -805,31 +832,35 @@
                         <span>Paket / Role</span>
                         <strong id="sum-package" style="color: #a5b4fc;">-</strong>
                     </div>
+                    <div class="summary-row" id="sum-discount-row" style="display: none;">
+                        <span>Diskon Voucher (50%)</span>
+                        <strong id="sum-discount-val" style="color: #fbbf24;">-Rp 0</strong>
+                    </div>
                     <div class="summary-row total">
                         <span>Total Pembayaran</span>
                         <span id="sum-total-price" style="color: #34d399;">Rp 0</span>
                     </div>
                 </div>
 
-                <button class="btn-primary" id="btn-create-qris" onclick="createBuatQrisInvoice()">
+                <button class="btn-primary" id="btn-create-qris" onclick="showQrisModal()">
                     <i class="fa-solid fa-qrcode"></i> Bayar via QRIS Sekarang
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL QRIS BUATQRIS.SITE -->
+    <!-- MODAL QRIS LINK -->
     <div class="modal-overlay" id="qris-modal">
         <div class="qris-modal">
             <div class="qris-header">
-                <span class="webhook-badge"><i class="fa-solid fa-bolt"></i> QRIS OTOMATIS</span>
+                <span class="webhook-badge"><i class="fa-solid fa-qrcode"></i> PEMBAYARAN QRIS</span>
                 <span style="font-size: 0.8rem; color: #f87171; font-weight: 700;" id="qris-timer">15:00</span>
             </div>
 
             <div style="font-size: 0.8rem; color: var(--text-muted);">Order ID: <strong id="inv-id" style="color: #fff;">INV-000000</strong></div>
 
             <div class="qris-box">
-                <img id="qris-image" src="" alt="QRIS Payment">
+                <img id="qris-image" src="" alt="QRIS Payment" onerror="this.src='https://placehold.co/250x250/ffffff/050811?text=QRIS+STORE'">
             </div>
 
             <div class="amount-highlight">
@@ -838,9 +869,9 @@
                 <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 2px;">Scan menggunakan DANA, OVO, GoPay, ShopeePay, atau M-Banking</div>
             </div>
 
-            <div class="webhook-status-box" id="webhook-status-box">
-                <div class="spinner" id="webhook-spinner"></div>
-                <span id="webhook-status-text">Menunggu pembayaran masuk via Webhook...</span>
+            <div class="webhook-status-box">
+                <i class="fa-solid fa-camera" style="color: #fbbf24;"></i>
+                <span>Setelah transfer berhasil, klik tombol di bawah untuk kirim bukti ke WA Admin.</span>
             </div>
 
             <button class="btn-wa" onclick="openWhatsAppApp()">
@@ -860,20 +891,20 @@
             storeName: "NASUTION STORE 🇪🇦",
             adminWhatsApp: "6285789797426",
 
-            buatQris: {
-                endpoint: "https://api.buatqris.site",
-                accountId: "user_6ae42a590a4171.32007732",
-                secretToken: "sk_live_663a60902d4a3aeff70e674ccb42dd07c9baca384c021c507019113463a190af",
-                qrisMethod: "qris_two",
-                feeBy: "buyer"
-            },
+            // TEMPELKAN LINK GAMBAR QRIS YANG ANDA UPLOAD DI SINI:
+            qrisUrl: "https://cdn.phototourl.com/member/2026-10-28-a8630b5f-de96-4dcf-a6c5-01b9ce0c2426.jpg",
 
             logos: {
                 miyaxiExec: "https://n.uguu.se/TCQjPDgWPEvu.jpg",
                 waFollowers: "https://h.uguu.se/gxGkZJqOKUXt.jpg",
                 tgFollowers: "https://n.uguu.se/EuphkZCWrFAR.jpg",
-                ttFollowers: "https://h.uguu.se/zxCYAXrtTZzW.jpg",
-                fallbackQris: "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=NASUTION_STORE_QRIS"
+                ttFollowers: "https://h.uguu.se/zxCYAXrtTZzW.jpg"
+            },
+
+            // CUSTOM KODE VOUCHER KHUSUS X-MIYAXI EXECUTION (DISKON 50%)
+            voucherMiyaxi: {
+                codes: ["WEEKENDON"],
+                discountPercent: 50
             }
         };
 
@@ -1010,8 +1041,8 @@
         let selectedProduct = null;
         let selectedPackage = null;
         let currentInvoice = null;
-        let pollingInterval = null;
         let timerInterval = null;
+        let appliedVoucher = null;
 
         const urlParams = new URLSearchParams(window.location.search);
         const discountPercent = Math.min(90, Math.max(0, parseInt(urlParams.get("diskon")) || 0));
@@ -1155,8 +1186,10 @@
         }
 
         function selectPackage(pkg, finalPrice) {
+            appliedVoucher = null;
             selectedPackage = {
                 ...pkg,
+                baseFinalPrice: finalPrice,
                 finalPrice: finalPrice
             };
 
@@ -1195,14 +1228,73 @@
                 `;
             }
 
-            document.getElementById("sum-product").textContent = selectedProduct.title;
-            document.getElementById("sum-package").textContent = selectedPackage.name;
-            document.getElementById("sum-total-price").textContent = formatRupiah(selectedPackage.finalPrice);
+            // Tampilkan kotak voucher HANYA jika produk adalah X-MIYAXI EXECUTION
+            const voucherBox = document.getElementById("miyaxi-voucher-box");
+            const voucherInput = document.getElementById("input-voucher-code");
+            const voucherMsg = document.getElementById("voucher-status-msg");
+            voucherInput.value = "";
+            voucherMsg.style.display = "none";
 
+            if (selectedProduct.id === "x-miyaxi-execution") {
+                voucherBox.style.display = "block";
+            } else {
+                voucherBox.style.display = "none";
+            }
+
+            updateCheckoutSummary();
             goStep(3);
         }
 
-        async function createBuatQrisInvoice() {
+        function applyMiyaxiVoucher() {
+            if (!selectedProduct || selectedProduct.id !== "x-miyaxi-execution") return;
+
+            const rawCode = document.getElementById("input-voucher-code").value.trim().toUpperCase();
+            const voucherMsg = document.getElementById("voucher-status-msg");
+
+            if (!rawCode) {
+                showToast("⚠️ Masukkan kode voucher terlebih dahulu!");
+                return;
+            }
+
+            if (STORE_CONFIG.voucherMiyaxi.codes.includes(rawCode)) {
+                appliedVoucher = rawCode;
+                const discPct = STORE_CONFIG.voucherMiyaxi.discountPercent;
+                selectedPackage.finalPrice = Math.round(selectedPackage.baseFinalPrice * (100 - discPct) / 100);
+
+                voucherMsg.style.display = "block";
+                voucherMsg.style.color = "#34d399";
+                voucherMsg.innerHTML = `<i class="fa-solid fa-circle-check"></i> Kode voucher <strong>${rawCode}</strong> berhasil diterapkan! Diskon ${discPct}%.`;
+                showToast(`🎉 Voucher ${rawCode} aktif! Hemat ${discPct}%`);
+            } else {
+                appliedVoucher = null;
+                selectedPackage.finalPrice = selectedPackage.baseFinalPrice;
+
+                voucherMsg.style.display = "block";
+                voucherMsg.style.color = "#f87171";
+                voucherMsg.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Kode voucher tidak valid untuk X-MIYAXI EXECUTION.`;
+                showToast("❌ Kode voucher tidak valid!");
+            }
+
+            updateCheckoutSummary();
+        }
+
+        function updateCheckoutSummary() {
+            document.getElementById("sum-product").textContent = selectedProduct.title;
+            document.getElementById("sum-package").textContent = selectedPackage.name;
+
+            const discRow = document.getElementById("sum-discount-row");
+            if (appliedVoucher) {
+                const saved = selectedPackage.baseFinalPrice - selectedPackage.finalPrice;
+                discRow.style.display = "flex";
+                document.getElementById("sum-discount-val").textContent = "-" + formatRupiah(saved);
+            } else {
+                discRow.style.display = "none";
+            }
+
+            document.getElementById("sum-total-price").textContent = formatRupiah(selectedPackage.finalPrice);
+        }
+
+        function showQrisModal() {
             const el1 = document.getElementById("input-data-1");
             const el2 = document.getElementById("input-data-2");
             const val1 = el1 ? el1.value.trim() : "";
@@ -1213,13 +1305,7 @@
                 return;
             }
 
-            const btn = document.getElementById("btn-create-qris");
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Membuat QRIS Dinamis...`;
-
             const invId = "INV-" + Math.floor(1000 + Math.random() * 9000);
-            const amountStr = String(selectedPackage.finalPrice);
-            const description = `Pembayaran order #${invId} - ${selectedProduct.title} (${selectedPackage.name})`;
 
             currentInvoice = {
                 invoiceId: invId,
@@ -1227,114 +1313,17 @@
                 product: selectedProduct.title,
                 package: selectedPackage.name,
                 amount: selectedPackage.finalPrice,
+                voucher: appliedVoucher,
                 data1: val1,
-                data2: val2,
-                status: "PENDING"
+                data2: val2
             };
 
-            try {
-                const res = await fetch(STORE_CONFIG.buatQris.endpoint, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                    body: new URLSearchParams({
-                        action: "api_create_qris",
-                        account_id: STORE_CONFIG.buatQris.accountId,
-                        secret_token: STORE_CONFIG.buatQris.secretToken,
-                        amount: amountStr,
-                        description: description,
-                        qris_method: STORE_CONFIG.buatQris.qrisMethod,
-                        fee_by: STORE_CONFIG.buatQris.feeBy,
-                    }),
-                });
-
-                const data = await res.json();
-                console.log("BuatQRIS Response:", res.status, data);
-
-                if (data && (data.status === true || data.success === true || data.qr_url || data.qris_url || data.qr_string || data.data)) {
-                    const payload = data.data || data;
-                    let qrImgSrc = payload.qr_url || payload.qris_url || payload.image_url || "";
-                    if (!qrImgSrc && (payload.qr_string || payload.qris_string || payload.qr_content)) {
-                        const rawStr = payload.qr_string || payload.qris_string || payload.qr_content;
-                        qrImgSrc = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(rawStr)}`;
-                    }
-
-                    currentInvoice.transactionId = payload.transaction_id || payload.trx_id || payload.id || invId;
-                    const finalAmount = payload.total_amount || payload.amount || selectedPackage.finalPrice;
-                    currentInvoice.amount = Number(finalAmount);
-
-                    openQrisModal(qrImgSrc || STORE_CONFIG.logos.fallbackQris, currentInvoice.amount, currentInvoice.transactionId);
-                } else {
-                    const errMsg = data.message || data.error || "API mengembalikan error (cek Account ID & Secret Token).";
-                    showToast("⚠️ " + errMsg);
-                    openQrisModal(STORE_CONFIG.logos.fallbackQris, currentInvoice.amount, invId);
-                }
-            } catch (err) {
-                console.error("Fetch BuatQRIS Error:", err);
-                showToast("⚠️ Gagal terhubung ke server API BuatQRIS.");
-                openQrisModal(STORE_CONFIG.logos.fallbackQris, currentInvoice.amount, invId);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<i class="fa-solid fa-qrcode"></i> Bayar via QRIS Sekarang`;
-            }
-        }
-
-        function openQrisModal(qrImageUrl, amount, trxId) {
-            document.getElementById("inv-id").textContent = trxId;
-            document.getElementById("qris-image").src = qrImageUrl;
-            document.getElementById("qris-exact-amount").textContent = formatRupiah(amount);
-
-            document.getElementById("webhook-spinner").style.display = "block";
-            document.getElementById("webhook-status-box").style.background = "rgba(255, 255, 255, 0.04)";
-            document.getElementById("webhook-status-box").style.color = "#cbd5e1";
-            document.getElementById("webhook-status-text").textContent = "Menunggu pembayaran masuk via Webhook...";
+            document.getElementById("inv-id").textContent = invId;
+            document.getElementById("qris-image").src = STORE_CONFIG.qrisUrl;
+            document.getElementById("qris-exact-amount").textContent = formatRupiah(currentInvoice.amount);
 
             document.getElementById("qris-modal").classList.add("active");
             startCountdown(900);
-            startStatusPolling(trxId);
-        }
-
-        function startStatusPolling(trxId) {
-            clearInterval(pollingInterval);
-            if (STORE_CONFIG.buatQris.accountId === "YOUR_ACCOUNT_ID") return;
-
-            pollingInterval = setInterval(async () => {
-                try {
-                    const res = await fetch(STORE_CONFIG.buatQris.endpoint, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/x-www-form-urlencoded",
-                        },
-                        body: new URLSearchParams({
-                            action: "api_check_status",
-                            account_id: STORE_CONFIG.buatQris.accountId,
-                            secret_token: STORE_CONFIG.buatQris.secretToken,
-                            transaction_id: trxId
-                        }),
-                    });
-
-                    const data = await res.json();
-                    const payload = data.data || data;
-                    const status = (payload.status || "").toString().toUpperCase();
-
-                    if (status === "PAID" || status === "SUCCESS" || status === "SETTLEMENT") {
-                        handlePaymentPaid();
-                    }
-                } catch (e) {}
-            }, 5000);
-        }
-
-        function handlePaymentPaid() {
-            clearInterval(pollingInterval);
-            clearInterval(timerInterval);
-            currentInvoice.status = "PAID";
-
-            document.getElementById("webhook-spinner").style.display = "none";
-            document.getElementById("webhook-status-box").style.background = "rgba(16, 185, 129, 0.2)";
-            document.getElementById("webhook-status-box").style.color = "#34d399";
-            document.getElementById("webhook-status-text").innerHTML = `<i class="fa-solid fa-circle-check"></i> PEMBAYARAN LUNAS TERVERIFIKASI!`;
-            showToast("✅ Pembayaran berhasil diterima!");
         }
 
         function startCountdown(seconds) {
@@ -1347,28 +1336,25 @@
                 document.getElementById("qris-timer").textContent = `${m}:${s}`;
                 if (rem <= 0) {
                     clearInterval(timerInterval);
-                    clearInterval(pollingInterval);
-                    document.getElementById("webhook-status-text").textContent = "Waktu pembayaran QRIS habis.";
                 }
             }, 1000);
         }
 
         function closeQrisModal() {
-            clearInterval(pollingInterval);
             clearInterval(timerInterval);
             document.getElementById("qris-modal").classList.remove("active");
         }
 
         function openWhatsAppApp() {
             if (!currentInvoice) return;
-            const statusText = currentInvoice.status === "PAID"
-                ? "✅ LUNAS (Terverifikasi QRIS)"
-                : "⏳ Sudah Scan QRIS (Menunggu Konfirmasi)";
 
             let detailLines = `1. ${currentInvoice.data1}`;
             if (currentInvoice.data2) {
                 detailLines += `\n2. ${currentInvoice.data2}`;
             }
+            const voucherLine = currentInvoice.voucher
+                ? `\n• *Kode Voucher:* ${currentInvoice.voucher} (Diskon 50%)`
+                : "";
 
             const message =
 `*HALO ADMIN ${STORE_CONFIG.storeName}*
@@ -1376,14 +1362,13 @@ Saya ingin konfirmasi pemesanan via QRIS:
 
 • *Order ID:* ${currentInvoice.transactionId}
 • *Layanan:* ${currentInvoice.product}
-• *Paket / Role:* ${currentInvoice.package}
+• *Paket / Role:* ${currentInvoice.package}${voucherLine}
 • *Total Bayar:* ${formatRupiah(currentInvoice.amount)}
-• *Status:* ${statusText}
 
 *Data Pesanan:*
 ${detailLines}
 
-Mohon segera diproses. Terima kasih!`;
+Bukti pembayaran QRIS sudah saya siapkan. Mohon segera diproses. Terima kasih!`;
 
             const encodedMsg = encodeURIComponent(message);
             const appUrl = `whatsapp://send?phone=${STORE_CONFIG.adminWhatsApp}&text=${encodedMsg}`;
